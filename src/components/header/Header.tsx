@@ -1,11 +1,20 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Film, Search, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
+import { Input } from '../ui/input';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
-export function ModeToggle() {
+export function Header() {
   const { theme, setTheme } = useTheme();
 
   const isDarkMode = theme === 'dark';
@@ -18,10 +27,26 @@ export function ModeToggle() {
           MovieZ
         </button>
       </div>
+      <div className="hidden md:flex">
+        <DropdownMenu>
+          <DropdownMenuTrigger>Genre</DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Genres</DropdownMenuLabel>
+            <DropdownMenuLabel>See list of movies by genre</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Profile</DropdownMenuItem>
+            <DropdownMenuItem>Billing</DropdownMenuItem>
+            <DropdownMenuItem>Team</DropdownMenuItem>
+            <DropdownMenuItem>Subscription</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Input placeholder="Search" />
+      </div>
       <div className="flex gap-3">
-        <Button variant="outline" className="w-9 h-9">
+        <Button variant="outline" className="w-9 h-9 md:hidden">
           <Search />
         </Button>
+
         <Button
           variant="outline"
           size="icon"
@@ -40,4 +65,4 @@ export function ModeToggle() {
   );
 }
 
-export default ModeToggle;
+export default Header;
