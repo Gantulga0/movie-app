@@ -28,7 +28,7 @@ export function Header() {
       </div>
       <div className="hidden md:flex md:gap-3">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex w-[97px] h-[36px] p-2.5 px-4 justify-center items-center gap-2 rounded-md border border-[#E4E4E7] bg-white shadow-sm hover:bg-slate-100 duration-75 ease-in-out">
+          <DropdownMenuTrigger className="flex w-[97px] h-[36px] p-2.5 px-4 justify-center items-center gap-2 rounded-md border hover:bg-slate-100 duration-75 ease-in-out">
             Genre
           </DropdownMenuTrigger>
 
@@ -37,79 +37,79 @@ export function Header() {
             <h2 className="text-base">See list of movies by genre</h2>
             <DropdownMenuSeparator className="mt-3 mb-3" />
 
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               Action
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               Adventure
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               Animation
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               Comedy
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               Crime
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               Documentary
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               Drama
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               Family
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               Fantasy
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               History
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               Horror
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               Music
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               Mystery
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               Romance
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               Science Fiction
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4 mb-4">
+            <Badge variant={'secondary'} className="mr-4 mb-4 cursor-pointer">
               TV Movie
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4">
+            <Badge variant={'secondary'} className="mr-4 cursor-pointer">
               Thriller
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4">
+            <Badge variant={'secondary'} className="mr-4 cursor-pointer">
               War
               <ChevronRight className="stroke-1" />
             </Badge>
-            <Badge variant={'secondary'} className="mr-4">
+            <Badge variant={'secondary'} className="mr-4 cursor-pointer">
               Western
               <ChevronRight className="stroke-1" />
             </Badge>
