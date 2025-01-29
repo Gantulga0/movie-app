@@ -1,7 +1,13 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { Film, Search, Moon, Sun, ChevronRight } from 'lucide-react';
+import {
+  Film,
+  Search,
+  Moon,
+  Sun,
+  ChevronRight,
+  ChevronDown,
+} from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import { Input } from '../ui/input';
@@ -29,6 +35,7 @@ export function Header() {
       <div className="hidden md:flex md:gap-3">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex w-[97px] h-[36px] p-2.5 px-4 justify-center items-center gap-2 rounded-md border hover:bg-slate-100 duration-75 ease-in-out">
+            <ChevronDown />
             Genre
           </DropdownMenuTrigger>
 
