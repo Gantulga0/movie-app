@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`antialiased`}>
+      <body className={`antialiased`} suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -26,6 +26,7 @@ export default function RootLayout({
           <Header />
 
           {children}
+          <Footer />
         </ThemeProvider>
       </body>
     </html>
