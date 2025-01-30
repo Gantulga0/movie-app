@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   Carousel,
   CarouselContent,
@@ -8,24 +9,44 @@ import {
 } from '@/components/ui/carousel';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
+import { Movie } from '@/types/movie-type';
 
-interface Movie {
-  id: number;
-  title: string;
-  backdrop_path: string | null;
-}
+const Slider: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>('');
+  const [nowPlayingMoviesData, setNowPlayingMoviesData] = useState<Movie[]>([]);
 
-interface SliderProps {
-  loading: boolean;
-  error: string | null;
-  nowPlayingMoviesData: Movie[];
-}
+  const TMDB_BASE_URL = process.env.TMDB_BASE_URL;
+  const API_TOKEN = process.env.API_TOKEN;
 
-const Slider: React.FC<SliderProps> = ({
-  loading,
-  error,
-  nowPlayingMoviesData,
-}) => {
+  const getMovieData = async () => {
+    try {
+      setLoading(true);
+      const nowPlayingResponse = await axios.get(
+        `${TMDB_BASE_URL}/movie/now_playing?language=en-US&page=1`,
+        {
+          headers: {
+            Authorization: `Bearer ${API_TOKEN}`,
+          },
+        }
+      );
+      setNowPlayingMoviesData(nowPlayingResponse.data.results);
+
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data.status_message || 'Error fetching data');
+      } else {
+        setError('An unexpected error occurred.');
+      }
+    }
+  };
+
+  useEffect(() => {
+    getMovieData();
+  }, []);
+
   return (
     <div>
       {loading && <p>Loading...</p>}
@@ -40,22 +61,14 @@ const Slider: React.FC<SliderProps> = ({
                     <CardContent className="flex items-center justify-center h-full">
                       {movie.backdrop_path ? (
                         <Image
-                          src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
+                          src={`https://image.tmdb.org/t/p/w300${movie.backdrop_path}`}
                           alt={movie.title}
                           className="object-cover"
                           fill={true}
                           quality={100}
                         />
                       ) : (
-                        <div>
-                          <Image
-                            src="/path-to-placeholder-image.jpg"
-                            alt="No image available"
-                            className="object-cover"
-                            fill={true}
-                            quality={100}
-                          />
-                        </div>
+                        <div>No image available</div>
                       )}
                     </CardContent>
                   </Card>
