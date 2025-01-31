@@ -33,7 +33,6 @@ const Slider: React.FC = () => {
         }
       );
       setNowPlayingMoviesData(nowPlayingResponse.data.results);
-
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -49,36 +48,34 @@ const Slider: React.FC = () => {
     getMovieData();
   }, []);
 
-  console.log(nowPlayingMoviesData);
-
   return (
     <div>
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500 font-bold">Error: {error}</p>}
+
+      {/* Carousel Section */}
       <Carousel className="w-full relative">
-        <CarouselContent className="h-[600px]">
+        <CarouselContent className="lg:h-[600px] max-lg:h-[250px]">
           {nowPlayingMoviesData.length > 0 ? (
             nowPlayingMoviesData.map((movie) => (
               <CarouselItem key={movie.id} className="h-full">
-                <div className="h-full relative">
-                  <CarouselNext />
+                <div className="h-full relative ">
                   <Card className="h-full">
                     <CardContent className="flex items-center justify-center h-full relative">
                       {movie.backdrop_path ? (
                         <Image
-                          src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w400/${movie.backdrop_path}`}
+                          src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w1280/${movie.backdrop_path}`}
                           alt={movie.title}
                           className="object-cover"
-                          sizes="(max-width: 768px) 100vw, 33vw"
+                          sizes="(max-width: 1280px) 100vw, 33vw"
                           fill={true}
                           quality={100}
                         />
                       ) : (
                         <div>No image available</div>
                       )}
-
-                      <div className="flex flex-col left-36 absolute max-w-[400px] max-h-[264px] p-4 text-white overflow-hidden gap-4">
-                        <div className="gap-3 ">
+                      <div className="lg:flex lg:flex-col lg:left-36 lg:absolute lg:max-w-[400px] lg:max-h-[264px] lg:p-4 lg:text-white lg:overflow-hidden lg:gap-4 max-lg:hidden">
+                        <div className="gap-3">
                           <h1 className="text-base font-bold">Now Playing:</h1>
                           <h2 className="text-2xl font-bold tracking-tight truncate">
                             {movie.title}
@@ -102,13 +99,15 @@ const Slider: React.FC = () => {
                     </CardContent>
                   </Card>
                 </div>
-                <CarouselPrevious />
               </CarouselItem>
             ))
           ) : !loading ? (
             <p>No movies found.</p>
           ) : null}
         </CarouselContent>
+
+        <CarouselPrevious className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10" />
+        <CarouselNext className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10" />
       </Carousel>
     </div>
   );

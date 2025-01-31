@@ -62,19 +62,17 @@ const TopRatedMovie = () => {
         <div className="flex flex-wrap gap-5 pt-9">
           {firstTenMovies.map((movie) => (
             <Card key={movie.id} className="mb-4 w-[230px]">
-              <CardHeader>
-                <CardTitle>
-                  <Image
-                    src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w200/${movie.poster_path}`}
-                    alt={movie.title}
-                    className="object-cover"
-                    width={200}
-                    height={350}
-                    quality={100}
-                  />
-                </CardTitle>
+              <CardHeader className="p-0">
+                <Image
+                  src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w1280/${movie.poster_path}`}
+                  alt={movie.title}
+                  className="object-cover rounded"
+                  width={250}
+                  height={350}
+                  quality={100}
+                />
               </CardHeader>
-              <CardFooter className="flex flex-col">
+              <CardFooter className="fflex flex-col p-2 items-start">
                 <div className="flex items-center gap-x-1">
                   <Star className="text-yellow-400 w-4" />
                   <p className="text-sm leading-5 font-medium">
