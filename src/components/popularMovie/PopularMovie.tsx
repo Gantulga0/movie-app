@@ -24,7 +24,6 @@ const PopularMovie = () => {
         );
 
         setPopularMoviesData(popularResponse.data.results);
-        console.log('This is popular:', popularResponse.data.results);
       } catch (err) {
         if (axios.isAxiosError(err)) {
           setError(err.response?.data.status_message || 'API error');

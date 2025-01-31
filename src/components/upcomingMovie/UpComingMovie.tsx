@@ -22,7 +22,6 @@ const UpComingMovie = () => {
         }
       );
       setUpComingMovie(upcomingResponse.data.results);
-      console.log('This is upcoming:', upcomingResponse.data.results);
     } catch (err) {
       setLoading(false);
       if (axios.isAxiosError(err)) {

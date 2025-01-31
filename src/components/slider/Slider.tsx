@@ -10,6 +10,7 @@ import {
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Movie } from '@/types/movie-type';
+import { Star } from 'lucide-react';
 
 const Slider: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -47,29 +48,49 @@ const Slider: React.FC = () => {
     getMovieData();
   }, []);
 
+  console.log(nowPlayingMoviesData);
+
   return (
     <div>
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500 font-bold">Error: {error}</p>}
-      <Carousel className="w-full pb-[52px]">
+      <Carousel className="w-full pb-[52px] relative">
         <CarouselContent className="h-[600px]">
           {nowPlayingMoviesData.length > 0 ? (
             nowPlayingMoviesData.map((movie) => (
               <CarouselItem key={movie.id} className="h-full">
-                <div className="h-full">
+                <div className="h-full relative">
                   <Card className="h-full">
-                    <CardContent className="flex items-center justify-center h-full">
+                    <CardContent className="flex items-center justify-center h-full relative">
                       {movie.backdrop_path ? (
                         <Image
-                          src={`https://image.tmdb.org/t/p/w300${movie.backdrop_path}`}
+                          src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w400/${movie.backdrop_path}`}
                           alt={movie.title}
                           className="object-cover"
+                          sizes="(max-width: 768px) 100vw, 33vw"
                           fill={true}
                           quality={100}
                         />
                       ) : (
                         <div>No image available</div>
                       )}
+
+                      <div className="flex flex-col left-36 absolute  max-w-[302px] p-4 text-white overflow-hidden gap-4">
+                        <div className="overflow-hidden ">
+                          <h1 className="text-base font-bold">Now Playing:</h1>
+                          <h2 className="text-4xl font-bold">{movie.title}</h2>
+                          <h2 className="text-base font-bold flex">
+                            <Star className="text-yellow-400" />
+                            {movie.vote_average}
+                          </h2>
+                        </div>
+                        <p className="text-xs font-normal leading-4 w-[302px]">
+                          {movie.overview}
+                        </p>
+                        <button className="bg-white text-black">
+                          Watch Trailer
+                        </button>
+                      </div>
                     </CardContent>
                   </Card>
                 </div>
