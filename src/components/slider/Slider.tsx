@@ -11,6 +11,7 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Movie } from '@/types/movie-type';
 import { Star } from 'lucide-react';
+import { Button } from '../ui/button';
 
 const Slider: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -54,12 +55,13 @@ const Slider: React.FC = () => {
     <div>
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500 font-bold">Error: {error}</p>}
-      <Carousel className="w-full pb-[52px] relative">
+      <Carousel className="w-full relative">
         <CarouselContent className="h-[600px]">
           {nowPlayingMoviesData.length > 0 ? (
             nowPlayingMoviesData.map((movie) => (
               <CarouselItem key={movie.id} className="h-full">
                 <div className="h-full relative">
+                  <CarouselNext />
                   <Card className="h-full">
                     <CardContent className="flex items-center justify-center h-full relative">
                       {movie.backdrop_path ? (
@@ -75,33 +77,38 @@ const Slider: React.FC = () => {
                         <div>No image available</div>
                       )}
 
-                      <div className="flex flex-col left-36 absolute  max-w-[302px] p-4 text-white overflow-hidden gap-4">
-                        <div className="overflow-hidden ">
+                      <div className="flex flex-col left-36 absolute max-w-[400px] max-h-[264px] p-4 text-white overflow-hidden gap-4">
+                        <div className="gap-3 ">
                           <h1 className="text-base font-bold">Now Playing:</h1>
-                          <h2 className="text-4xl font-bold">{movie.title}</h2>
+                          <h2 className="text-2xl font-bold tracking-tight truncate">
+                            {movie.title}
+                          </h2>
+
                           <h2 className="text-base font-bold flex">
                             <Star className="text-yellow-400" />
-                            {movie.vote_average}
+                            {movie.vote_average} /10
                           </h2>
                         </div>
-                        <p className="text-xs font-normal leading-4 w-[302px]">
+                        <p className="text-sm font-normal line-clamp-5 w-[302px]">
                           {movie.overview}
                         </p>
-                        <button className="bg-white text-black">
+                        <Button
+                          variant="secondary"
+                          className="gap-2 h-10 w-[140px]"
+                        >
                           Watch Trailer
-                        </button>
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
                 </div>
+                <CarouselPrevious />
               </CarouselItem>
             ))
           ) : !loading ? (
             <p>No movies found.</p>
           ) : null}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
       </Carousel>
     </div>
   );
