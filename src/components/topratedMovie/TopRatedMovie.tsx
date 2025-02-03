@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Movie } from '@/types/movie-type';
-import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardFooter, CardHeader } from '@/components/ui/card';
 import Image from 'next/image';
 import { Star, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -59,9 +59,9 @@ const TopRatedMovie = () => {
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
       {firstTenMovies && firstTenMovies.length > 0 ? (
-        <div className="flex flex-wrap gap-5 pt-9">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 pt-9">
           {firstTenMovies.map((movie) => (
-            <Card key={movie.id} className="mb-4 w-[230px]">
+            <Card key={movie.id} className="w-full max-w-[230px] mx-auto">
               <CardHeader className="p-0">
                 <Image
                   src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w1280/${movie.poster_path}`}
@@ -72,7 +72,7 @@ const TopRatedMovie = () => {
                   quality={100}
                 />
               </CardHeader>
-              <CardFooter className="fflex flex-col p-2 items-start">
+              <CardFooter className="flex flex-col p-2 items-start">
                 <div className="flex items-center gap-x-1">
                   <Star className="text-yellow-400 w-4" />
                   <p className="text-sm leading-5 font-medium">
@@ -88,7 +88,7 @@ const TopRatedMovie = () => {
           ))}
         </div>
       ) : (
-        <p>No upcoming movies available.</p>
+        <p>No top-rated movies available.</p>
       )}
     </div>
   );

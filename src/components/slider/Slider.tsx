@@ -53,7 +53,6 @@ const Slider: React.FC = () => {
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500 font-bold">Error: {error}</p>}
 
-      {/* Carousel Section */}
       <Carousel className="w-full relative">
         <CarouselContent className="lg:h-[600px] max-lg:h-[250px]">
           {nowPlayingMoviesData.length > 0 ? (
@@ -62,7 +61,7 @@ const Slider: React.FC = () => {
                 <div className="h-full relative ">
                   <Card className="h-full">
                     <CardContent className="flex items-center justify-center h-full relative">
-                      {movie.backdrop_path ? (
+                      <div className="flex flex-col">
                         <Image
                           src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w1280/${movie.backdrop_path}`}
                           alt={movie.title}
@@ -71,30 +70,30 @@ const Slider: React.FC = () => {
                           fill={true}
                           quality={100}
                         />
-                      ) : (
-                        <div>No image available</div>
-                      )}
-                      <div className="lg:flex lg:flex-col lg:left-36 lg:absolute lg:max-w-[400px] lg:max-h-[264px] lg:p-4 lg:text-white lg:overflow-hidden lg:gap-4 max-lg:hidden">
-                        <div className="gap-3">
-                          <h1 className="text-base font-bold">Now Playing:</h1>
-                          <h2 className="text-2xl font-bold tracking-tight truncate">
-                            {movie.title}
-                          </h2>
+                        <div className="lg:flex lg:flex-col lg:left-36 lg:absolute lg:max-w-[400px] lg:max-h-[264px] lg:p-4 lg:text-white lg:overflow-hidden lg:gap-4 ">
+                          <div className="gap-3">
+                            <h1 className="text-base font-bold">
+                              Now Playing:
+                            </h1>
+                            <h2 className="text-2xl font-bold tracking-tight truncate">
+                              {movie.title}
+                            </h2>
 
-                          <h2 className="text-base font-bold flex">
-                            <Star className="text-yellow-400" />
-                            {movie.vote_average} /10
-                          </h2>
+                            <h2 className="text-base font-bold flex">
+                              <Star className="text-yellow-400" />
+                              {movie.vote_average} /10
+                            </h2>
+                          </div>
+                          <p className="text-sm font-normal line-clamp-5 w-[302px]">
+                            {movie.overview}
+                          </p>
+                          <Button
+                            variant="secondary"
+                            className="gap-2 h-10 w-[140px]"
+                          >
+                            Watch Trailer
+                          </Button>
                         </div>
-                        <p className="text-sm font-normal line-clamp-5 w-[302px]">
-                          {movie.overview}
-                        </p>
-                        <Button
-                          variant="secondary"
-                          className="gap-2 h-10 w-[140px]"
-                        >
-                          Watch Trailer
-                        </Button>
                       </div>
                     </CardContent>
                   </Card>
