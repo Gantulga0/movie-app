@@ -74,7 +74,7 @@ const PopularMovie = () => {
               </CardHeader>
               <CardFooter className="flex flex-col p-2 items-start">
                 <div className="flex items-center gap-x-1">
-                  <Star className="text-yellow-400 w-4" />
+                  <Star className="text-yellow-400 w-4 fill-yellow-400" />
                   <p className="text-sm leading-5 font-medium">
                     {movie.vote_average}
                   </p>

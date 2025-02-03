@@ -26,19 +26,25 @@ export function Header() {
   const isDarkMode = theme === 'dark';
 
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const toggleSearch = () => {
     setIsSearchVisible((prev) => !prev);
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
   return (
-    <div className="m-5 flex justify-between items-center max-w-[1280px] mx-auto pr-5 pl-5">
+    <header className="fixed top-0 inset-x-0 z-20 h-[59px] bg-background flex items-center justify-between mx-auto max-w-[1280px] px-5">
       <div className="flex gap-2 text-indigo-700">
         <Film />
         <button className="font-inter text-xl italic font-bold leading-5 tracking-[0.32px]">
           MovieZ
         </button>
       </div>
+
       <div className="hidden md:flex md:gap-3">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex w-[97px] h-[36px] p-2.5 px-4 justify-center items-center gap-2 rounded-md border hover:bg-slate-100 duration-75 ease-in-out">
@@ -132,13 +138,20 @@ export function Header() {
       </div>
 
       <div
-        className={`absolute top-0 left-0 flex justify-between items-center h-[59px] px-5 bg-background w-full ${
-          isSearchVisible ? 'flex' : 'hidden'
+        className={`absolute top-0 left-0 flex justify-between items-center h-[59px] px-5 bg-background w-full transition-all duration-300 ease-in-out ${
+          isSearchVisible
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 translate-y-[-100px]'
         } md:hidden`}
       >
         <div className="absolute top-3 left-20">
-          <Search className="absolute top-2 left-1 w-5 h-5" />
-          <Input placeholder="Search" className="h-[36px] pl-8" />
+          <Search className="absolute top-2 left-2 w-[18px] h-[18px]" />
+          <Input
+            placeholder="Search"
+            className="h-[36px] pl-9"
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
         </div>
         <div>
           <DropdownMenu>
@@ -147,7 +160,7 @@ export function Header() {
                 <ChevronDown className="text-white" />
               </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[330px] p-5 ">
+            <DropdownMenuContent className="w-[330px] p-5 ml-5">
               <h1 className="font-bold text-2xl">Genres</h1>
               <h2 className="text-base">See list of movies by genre</h2>
               <DropdownMenuSeparator className="mt-3 mb-3" />
@@ -236,13 +249,13 @@ export function Header() {
         </Button>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-center">
         <Button
           variant="outline"
           className="w-9 h-9 md:hidden"
           onClick={toggleSearch}
         >
-          <Search className="white" />
+          <Search />
         </Button>
         <Button
           variant="outline"
@@ -258,7 +271,7 @@ export function Header() {
           )}
         </Button>
       </div>
-    </div>
+    </header>
   );
 }
 

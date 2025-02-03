@@ -61,10 +61,7 @@ const UpComingMovie = () => {
       {firstTenMovies && firstTenMovies.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 pt-9">
           {firstTenMovies.map((movie) => (
-            <Card
-              key={movie.id}
-              className="w-full max-w-[200px] mx-auto"
-            >
+            <Card key={movie.id} className="w-full max-w-[200px] mx-auto">
               <CardHeader className="p-0">
                 <Image
                   src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w1280/${movie.poster_path}`}
@@ -77,7 +74,7 @@ const UpComingMovie = () => {
               </CardHeader>
               <CardFooter className="flex flex-col p-2 items-start ">
                 <div className="flex items-center gap-x-1">
-                  <Star className="text-yellow-400 w-4" />
+                  <Star className="text-yellow-400 w-4 fill-yellow-400" />
                   <p className="text-sm leading-5 font-medium">
                     {movie.vote_average}
                   </p>

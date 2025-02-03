@@ -49,29 +49,70 @@ const Slider: React.FC = () => {
   }, []);
 
   return (
-    <div>
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-red-500 font-bold">Error: {error}</p>}
+    <div className="mt-20">
+      <div className="lg:hidden">
+        <Carousel className="w-screen flex flex-col p-0 ">
+          <CarouselContent>
+            {nowPlayingMoviesData.slice(0, 10).map((movie) => (
+              <CarouselItem key={movie.id}>
+                <Card>
+                  <CardContent className="flex  justify-center p-0">
+                    <div className="">
+                      <Image
+                        src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+                        width={1000}
+                        height={250}
+                        alt="Picture of the author"
+                        className="h-[247px] object-cover"
+                      />
+                      <div className="p-5">
+                        <div className="flex justify-between">
+                          <div>
+                            <p>Now playing:</p>
+                            <h3 className="font-semibold text-2xl">
+                              {movie.title}
+                            </h3>
+                          </div>
+                          <div className="flex gap-1 items-center">
+                            <Star className="text-yellow-400 w-7 h-7 fill-yellow-400" />
+                            {movie.vote_average}/10
+                          </div>
+                        </div>
+                        <div>
+                          <p className="font-normal text-sm leading-5 my-4 h-[100px] overflow-hidden overflow-y-auto">
+                            {movie.overview}
+                          </p>
+                        </div>
+                        <Button>Watch trailer</Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+      </div>
 
-      <Carousel className="w-full relative">
-        <CarouselContent className="lg:h-[600px] max-lg:h-[250px]">
-          {nowPlayingMoviesData.length > 0 ? (
-            nowPlayingMoviesData.map((movie) => (
-              <CarouselItem key={movie.id} className="h-full">
-                <div className="h-full relative ">
-                  <Card className="h-full">
-                    <CardContent className="flex items-center justify-center h-full relative">
-                      <div className="flex flex-col">
+      <div className="hidden lg:block">
+        <Carousel className="w-screens max-h-[600px] flex flex-col p-0 ">
+          <CarouselContent>
+            {nowPlayingMoviesData.slice(0, 10).map((movie) => (
+              <CarouselItem key={movie.id}>
+                <div>
+                  <Card>
+                    <CardContent className="p-0 h-[700px]">
+                      <div className="">
                         <Image
-                          src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w1280/${movie.backdrop_path}`}
-                          alt={movie.title}
-                          className="object-cover"
-                          sizes="(max-width: 1280px) 100vw, 33vw"
-                          fill={true}
-                          quality={100}
+                          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+                          width={2500}
+                          height={750}
+                          alt="Picture of the movie"
+                          className="absolute object-cover h-[700px]"
                         />
-                        <div className="lg:flex lg:flex-col lg:left-36 lg:absolute lg:max-w-[400px] lg:max-h-[264px] lg:p-4 lg:text-white lg:overflow-hidden lg:gap-4 ">
-                          <div className="gap-3">
+
+                        <div className="p-5 relative top-0 left-0 min-h-[500px] w-screen flex flex-col justify-center ml-40 gap-4">
+                          <div className="gap-4">
                             <h1 className="text-base font-bold">
                               Now Playing:
                             </h1>
@@ -99,15 +140,12 @@ const Slider: React.FC = () => {
                   </Card>
                 </div>
               </CarouselItem>
-            ))
-          ) : !loading ? (
-            <p>No movies found.</p>
-          ) : null}
-        </CarouselContent>
-
-        <CarouselPrevious className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10" />
-        <CarouselNext className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10" />
-      </Carousel>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="absolute left-10 top-1/2 transform -translate-y-1/2 z-100" />
+          <CarouselNext className="absolute right-10 top-1/2 transform -translate-y-1/2 z-100" />
+        </Carousel>
+      </div>
     </div>
   );
 };
