@@ -5,6 +5,7 @@ import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Star, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 const UpComingMovie = () => {
   const [loading, setLoading] = useState(false);
@@ -13,6 +14,8 @@ const UpComingMovie = () => {
 
   const TMDB_BASE_URL = process.env.TMDB_BASE_URL;
   const API_TOKEN = process.env.API_TOKEN;
+
+  const router = useRouter();
 
   const getMovieData = async () => {
     try {
@@ -44,13 +47,20 @@ const UpComingMovie = () => {
 
   const firstTenMovies = upComingMovie?.slice(0, 10);
 
+  const handleSeeMoreClick = () => {
+    router.push('/category/upcoming');
+  };
   return (
     <div className="m-5 flex flex-col justify-between max-w-[1280px] mx-auto pt-14 pr-5 pl-5">
       <div className="flex justify-between">
         <h3 className="font-inter text-[24px] font-semibold leading-[32px] tracking-[-0.6px]">
           Upcoming
         </h3>
-        <Button variant="link" className="font-inter text-sm font-semibold">
+        <Button
+          variant="link"
+          className="font-inter text-sm font-semibold"
+          onClick={handleSeeMoreClick}
+        >
           See more
           <ArrowRight />
         </Button>

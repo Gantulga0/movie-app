@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '../ui/badge';
+import { useRouter } from 'next/navigation';
 
 export function Header() {
   const { theme, setTheme } = useTheme();
@@ -27,6 +28,8 @@ export function Header() {
 
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const router = useRouter();
 
   const toggleSearch = () => {
     setIsSearchVisible((prev) => !prev);
@@ -36,11 +39,17 @@ export function Header() {
     setSearchQuery(e.target.value);
   };
 
+  const handleHomeClick = () => {
+    router.push('/');
+  };
   return (
     <header className="fixed top-0 inset-x-0 z-20 h-[59px] bg-background flex items-center justify-between mx-auto max-w-[1280px] px-5">
       <div className="flex gap-2 text-indigo-700">
         <Film />
-        <button className="font-inter text-xl italic font-bold leading-5 tracking-[0.32px]">
+        <button
+          className="font-inter text-xl italic font-bold leading-5 tracking-[0.32px]"
+          onClick={handleHomeClick}
+        >
           MovieZ
         </button>
       </div>
