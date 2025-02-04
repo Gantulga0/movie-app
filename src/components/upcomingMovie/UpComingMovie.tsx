@@ -78,7 +78,7 @@ const UpComingMovie = () => {
           {firstTenMovies.map((movie) => (
             <Card
               key={movie.id}
-              className="w-full max-w-[200px] mx-auto"
+              className="w-full max-w-[200px] mx-auto cursor-pointer"
               onClick={() => handleMovieClick(movie.id)}
             >
               <CardHeader className="p-0">

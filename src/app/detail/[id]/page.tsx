@@ -18,6 +18,7 @@ const page = () => {
   const [writers, setWriters] = useState<string[]>([]);
   const [similarMovies, setSimilarMovies] = useState<any[]>([]);
   const [error, setError] = useState<string>('');
+  const [trailerUrl, setTrailerUrl] = useState<string | null>(null);
 
   const { id } = useParams();
   const router = useRouter();
@@ -31,27 +32,36 @@ const page = () => {
     const getMovieDetails = async () => {
       setLoading(true);
       try {
-        const [movieResponse, creditsResponse, similarMoviesResponse] =
-          await Promise.all([
-            axios.get(`${TMDB_BASE_URL}/movie/${id}?language=en-US`, {
+        const [
+          movieResponse,
+          creditsResponse,
+          similarMoviesResponse,
+          videoResponse, // New API call for videos
+        ] = await Promise.all([
+          axios.get(`${TMDB_BASE_URL}/movie/${id}?language=en-US`, {
+            headers: {
+              Authorization: `Bearer ${API_TOKEN}`,
+            },
+          }),
+          axios.get(`${TMDB_BASE_URL}/movie/${id}/credits?language=en-US`, {
+            headers: {
+              Authorization: `Bearer ${API_TOKEN}`,
+            },
+          }),
+          axios.get(
+            `${TMDB_BASE_URL}/movie/${id}/similar?language=en-US&page=1`,
+            {
               headers: {
                 Authorization: `Bearer ${API_TOKEN}`,
               },
-            }),
-            axios.get(`${TMDB_BASE_URL}/movie/${id}/credits?language=en-US`, {
-              headers: {
-                Authorization: `Bearer ${API_TOKEN}`,
-              },
-            }),
-            axios.get(
-              `${TMDB_BASE_URL}/movie/${id}/similar?language=en-US&page=1`,
-              {
-                headers: {
-                  Authorization: `Bearer ${API_TOKEN}`,
-                },
-              }
-            ),
-          ]);
+            }
+          ),
+          axios.get(`${TMDB_BASE_URL}/movie/${id}/videos?language=en-US`, {
+            headers: {
+              Authorization: `Bearer ${API_TOKEN}`,
+            },
+          }), // Fetch videos (trailers)
+        ]);
 
         setMovie(movieResponse.data);
         setCast(creditsResponse.data.cast);
@@ -67,7 +77,13 @@ const page = () => {
         setWriters(writerData.map((writer: any) => writer.name));
         setSimilarMovies(similarMoviesResponse.data.results);
 
-        console.log('this is similar movie', similarMoviesResponse.data);
+        // Assuming you want the first video, which is typically the official trailer
+        const trailer = videoResponse.data.results.find(
+          (video: any) => video.type === 'Trailer'
+        );
+        setTrailerUrl(
+          trailer ? `https://www.youtube.com/embed/${trailer.key}` : null
+        );
       } catch (err) {
         if (axios.isAxiosError(err)) {
           setError(err.response?.data.status_message || 'API error');
@@ -86,6 +102,12 @@ const page = () => {
   if (error) return <p>Error: {error}</p>;
   if (!movie) return <p>No movie details available.</p>;
 
+  const formatRuntime = (minutes: number) => {
+    const hours = Math.floor(minutes / 60); // Get the number of hours
+    const mins = minutes % 60; // Get the remaining minutes after converting to hours
+    return `${hours}h ${mins}m`;
+  };
+
   const handleSeeMoreClick = () => {
     router.push(`/category/similar/${id}`);
   };
@@ -95,21 +117,32 @@ const page = () => {
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-[1280px]">
+    <div className="container mx-auto p-6 max-w-[1100px]">
       <div className="flex flex-col">
         <div className="w-full mt-20">
-          <div className="sm:flex sm:justify-between">
-            <div className="">
-              <h2 className="text-2xl sm:text-3xl font-semibold">
-                {movie.title}
-              </h2>
-              <p className="text-sm text-gray-500">
-                Release Date: {movie.release_date} · {movie.runtime}
+          <div className="justify-between flex">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-bold">{movie.title}</h2>
+              <p className="text-lg mb-5">
+                {movie.release_date} · {formatRuntime(movie.runtime)}
               </p>
             </div>
             <div>
-              <p className="font-medium">Rating: {movie.vote_average}/10</p>
-              <p className="font-medium">{movie.vote_count}</p>
+              <p className="font-semibold text-xs max-md:hidden">Rating</p>
+              <div className="flex items-center p-0 m-0">
+                <Star className="text-yellow-400 w-7 h-7 fill-yellow-400" />
+                <div>
+                  <div className="flex items-center">
+                    <p className="font-semibold text-sm ">
+                      {movie.vote_average}
+                    </p>
+                    <p className="font-medium text-xs  text-gray-400">/10</p>
+                  </div>
+                  <p className="font-medium text-xs  text-gray-400">
+                    {movie.vote_count}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           <div className="sm:flex sm:gap-8">
@@ -125,7 +158,21 @@ const page = () => {
               )}
             </div>
 
-            <div className="bg-red-400 w-full h-[211px] mb-8 sm:h-[428px]"></div>
+            <div className="w-[760px] h-[211px] sm:h-[428px] max-md:w-[375px] mb-8">
+              {trailerUrl ? (
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={trailerUrl}
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title="Movie Trailer"
+                  className="rounded"
+                ></iframe>
+              ) : (
+                <div className="bg-red-400 w-full h-full"></div>
+              )}
+            </div>
           </div>
 
           <div className="max-md:flex max-md: gap-5">
@@ -209,7 +256,7 @@ const page = () => {
               {similarMovies.slice(0, 5).map((similarMovie) => (
                 <Card
                   key={similarMovie.id}
-                  className="w-full max-w-[157px] mx-auto sm:max-w-[230px]"
+                  className="w-full max-w-[157px] mx-auto sm:max-w-[197px]"
                   onClick={() => handleMovieClick(similarMovie.id)}
                 >
                   <CardHeader className="p-0">

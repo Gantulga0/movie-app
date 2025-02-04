@@ -14,6 +14,7 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from '@/components/ui/pagination';
+import { useRouter } from 'next/navigation';
 
 const TopRatedMovie = () => {
   const [loading, setLoading] = useState(false);
@@ -24,6 +25,8 @@ const TopRatedMovie = () => {
 
   const TMDB_BASE_URL = process.env.TMDB_BASE_URL;
   const API_TOKEN = process.env.API_TOKEN;
+
+  const router = useRouter();
 
   const getMovieData = async (page: number) => {
     try {
@@ -73,6 +76,10 @@ const TopRatedMovie = () => {
 
   const pageNumbers = createPageArray(totalPages, currentPage);
 
+  const handleMovieClick = (movieId: number) => {
+    router.push(`/detail/${movieId}`);
+  };
+
   return (
     <div className="m-5 flex flex-col justify-between max-w-[1280px] mx-auto pt-14 pr-5 pl-5 mt-20">
       <div className="flex justify-between">
@@ -85,7 +92,11 @@ const TopRatedMovie = () => {
       {topRatedMoviesData && topRatedMoviesData.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 pt-9">
           {topRatedMoviesData.map((movie) => (
-            <Card key={movie.id} className="w-full max-w-[200px] mx-auto">
+            <Card
+              key={movie.id}
+              className="w-full max-w-[200px] mx-auto cursor-pointer"
+              onClick={() => handleMovieClick(movie.id)}
+            >
               <CardHeader className="p-0">
                 <Image
                   src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w1280/${movie.poster_path}`}
