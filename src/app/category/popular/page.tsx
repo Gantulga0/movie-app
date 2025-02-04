@@ -115,7 +115,7 @@ const PopularMovie = () => {
       ) : (
         <p>No popular movies available.</p>
       )}
-      <Pagination className="mt-[32px] flex justify-end">
+      <Pagination className="mt-[32px] flex justify-end max-md:w-[300px]">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious

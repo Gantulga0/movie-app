@@ -25,7 +25,6 @@ const TopRatedMovie = () => {
   const TMDB_BASE_URL = process.env.TMDB_BASE_URL;
   const API_TOKEN = process.env.API_TOKEN;
 
-  // Fetch top-rated movies data
   const getMovieData = async (page: number) => {
     try {
       setLoading(true);
