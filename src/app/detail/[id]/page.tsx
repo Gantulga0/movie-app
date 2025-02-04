@@ -3,9 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Movie } from '@/types/movie-type';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ArrowRight, Star } from 'lucide-react';
+import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 const page = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -17,6 +20,7 @@ const page = () => {
   const [error, setError] = useState<string>('');
 
   const { id } = useParams();
+  const router = useRouter();
 
   const TMDB_BASE_URL = process.env.TMDB_BASE_URL;
   const API_TOKEN = process.env.API_TOKEN;
@@ -82,32 +86,62 @@ const page = () => {
   if (error) return <p>Error: {error}</p>;
   if (!movie) return <p>No movie details available.</p>;
 
+  const handleSeeMoreClick = () => {
+    router.push(`/category/similar/${id}`);
+  };
+
+  const handleMovieClick = (movieId: number) => {
+    router.push(`/detail/${movieId}`);
+  };
+
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex flex-col sm:flex-row">
-        <div className="w-full sm:w-1/3">
-          <div className="mt-14 mb-4">
-            <h2 className="text-2xl font-semibold">{movie.title}</h2>
-            <p className="text-sm text-gray-500">
-              Release Date: {movie.release_date} · {movie.runtime}
-            </p>
-            <p className="font-medium">Rating: {movie.vote_average}/10</p>
-            <p className="font-medium">{movie.vote_count}</p>
+    <div className="container mx-auto p-6 max-w-[1280px]">
+      <div className="flex flex-col">
+        <div className="w-full mt-20">
+          <div className="sm:flex sm:justify-between">
+            <div className="">
+              <h2 className="text-2xl sm:text-3xl font-semibold">
+                {movie.title}
+              </h2>
+              <p className="text-sm text-gray-500">
+                Release Date: {movie.release_date} · {movie.runtime}
+              </p>
+            </div>
+            <div>
+              <p className="font-medium">Rating: {movie.vote_average}/10</p>
+              <p className="font-medium">{movie.vote_count}</p>
+            </div>
           </div>
-          <div className="bg-red-400 w-full h-[211px] mb-8"></div>
-          <div className="flex gap-10">
-            {movie.poster_path && (
-              <Image
-                src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w500/${movie.poster_path}`}
-                alt={movie.title}
-                width={100}
-                height={148}
-                className="rounded h-[148px]"
-              />
-            )}
-            <div className="sm:w-2/3 sm:mt-0">
+          <div className="sm:flex sm:gap-8">
+            <div className="flex gap-10 max-sm:hidden">
+              {movie.poster_path && (
+                <Image
+                  src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w500/${movie.poster_path}`}
+                  alt={movie.title}
+                  width={290}
+                  height={148}
+                  className="rounded h-[148px] sm:h-[428px] sm:w-[290]"
+                />
+              )}
+            </div>
+
+            <div className="bg-red-400 w-full h-[211px] mb-8 sm:h-[428px]"></div>
+          </div>
+
+          <div className="max-md:flex max-md: gap-5">
+            <div className="hidden max-sm:block">
+              {movie.poster_path && (
+                <Image
+                  src={`${process.env.TMDB_IMAGE_SERVICE_URL}/original/${movie.poster_path}`}
+                  alt={movie.title}
+                  width={100}
+                  height={148}
+                  className="rounded w-[100px] h-[148px]"
+                />
+              )}
+            </div>
+            <div className="max-md:w-full ">
               <div className="">
-                <h3 className="font-medium text-lg">Genres:</h3>
                 <ul className="flex gap-2">
                   {movie.genres.map((genre) => (
                     <Badge key={genre.id} variant="outline">
@@ -116,18 +150,20 @@ const page = () => {
                   ))}
                 </ul>
               </div>
-              <p className="mt-4">{movie.overview}</p>
+              <p className="mt-4 text-sm sm:text-base">{movie.overview}</p>
             </div>
           </div>
         </div>
+        <div>
+          {director && (
+            <div className="mt-6 flex gap-4 items-center">
+              <h3 className="text-base font-bold w-16">Director</h3>
+              <p>{director}</p>
+            </div>
+          )}
+          <hr />
+        </div>
 
-        {director && (
-          <div className="mt-6 flex gap-4 items-center">
-            <h3 className="text-base font-bold w-16">Director</h3>
-            <p>{director}</p>
-          </div>
-        )}
-        <hr />
         {writers.length > 0 && (
           <div className="mt-6 flex gap-4 items-center">
             <h3 className="text-base font-bold  w-16">Writers</h3>
@@ -139,8 +175,8 @@ const page = () => {
           </div>
         )}
         <hr />
-        <div className="mt-6 sm:mt-0 flex gap-4 items-center">
-          <h3 className="text-base font-bold mb-2 w-[64px]">Stars</h3>
+        <div className="sm:mt-0 flex gap-4 items-center">
+          <h3 className="text-base font-bold w-16 max-md:mr-6">Stars</h3>
           <div className="flex gap-2 flex-wrap">
             {cast.length > 0 ? (
               cast.slice(0, 6).map((actor) => (
@@ -156,26 +192,51 @@ const page = () => {
         <hr />
 
         {similarMovies.length > 0 && (
-          <div className="mt-6 sm:mt-0 flex gap-4 items-center">
-            <h3 className="text-base font-bold mb-2 w-[64px]">
-              Similar Movies
-            </h3>
-            <div className="flex gap-4 overflow-x-auto">
-              {similarMovies.map((similarMovie) => (
-                <div key={similarMovie.id} className="text-center w-36">
-                  {similarMovie.poster_path ? (
+          <div className="mt-6 sm:mt-0 flex gap-4 items-center flex-col">
+            <div className="flex items-center justify-between w-full">
+              <h3 className="text-base font-bold">More like this</h3>
+              <Button
+                variant="link"
+                className="font-inter text-sm font-semibold"
+                onClick={handleSeeMoreClick}
+              >
+                See more
+                <ArrowRight />
+              </Button>
+            </div>
+
+            <div className="mt-6 sm:mt-0 flex flex-wrap gap-4 justify-center">
+              {similarMovies.slice(0, 5).map((similarMovie) => (
+                <Card
+                  key={similarMovie.id}
+                  className="w-full max-w-[157px] mx-auto sm:max-w-[230px]"
+                  onClick={() => handleMovieClick(similarMovie.id)}
+                >
+                  <CardHeader className="p-0">
                     <Image
-                      src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w185/${similarMovie.poster_path}`}
+                      src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w1280/${similarMovie.poster_path}`}
                       alt={similarMovie.title}
-                      width={120}
-                      height={180}
-                      className="rounded-md"
+                      className="object-cover rounded"
+                      width={250}
+                      height={350}
+                      quality={100}
                     />
-                  ) : (
-                    <div className="w-20 h-30 bg-gray-300 rounded-md" />
-                  )}
-                  <p className="text-sm mt-2">{similarMovie.title}</p>
-                </div>
+                  </CardHeader>
+                  <CardFooter className="flex flex-col p-2 items-start">
+                    <div className="flex items-center gap-x-1">
+                      <Star className="text-yellow-400 w-4 fill-yellow-400" />
+                      <p className="text-sm leading-5 font-medium">
+                        {similarMovie.vote_average}
+                      </p>
+                      <p className="text-muted-foreground text-xs pt-[2px]">
+                        /10
+                      </p>
+                    </div>
+                    <div className="h-14 overflow-hidden text-ellipsis line-clamp-2 text-lg text-foreground">
+                      {similarMovie.title}
+                    </div>
+                  </CardFooter>
+                </Card>
               ))}
             </div>
           </div>
