@@ -36,7 +36,7 @@ const page = () => {
           movieResponse,
           creditsResponse,
           similarMoviesResponse,
-          videoResponse, // New API call for videos
+          videoResponse,
         ] = await Promise.all([
           axios.get(`${TMDB_BASE_URL}/movie/${id}?language=en-US`, {
             headers: {
@@ -60,7 +60,7 @@ const page = () => {
             headers: {
               Authorization: `Bearer ${API_TOKEN}`,
             },
-          }), // Fetch videos (trailers)
+          }),
         ]);
 
         setMovie(movieResponse.data);
@@ -77,7 +77,6 @@ const page = () => {
         setWriters(writerData.map((writer: any) => writer.name));
         setSimilarMovies(similarMoviesResponse.data.results);
 
-        // Assuming you want the first video, which is typically the official trailer
         const trailer = videoResponse.data.results.find(
           (video: any) => video.type === 'Trailer'
         );
@@ -103,8 +102,8 @@ const page = () => {
   if (!movie) return <p>No movie details available.</p>;
 
   const formatRuntime = (minutes: number) => {
-    const hours = Math.floor(minutes / 60); // Get the number of hours
-    const mins = minutes % 60; // Get the remaining minutes after converting to hours
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
     return `${hours}h ${mins}m`;
   };
 
