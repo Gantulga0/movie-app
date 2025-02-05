@@ -55,7 +55,7 @@ export function Header() {
   const handleGenreSelect = (genreId: string) => {
     setSelectedGenre(genreId);
 
-    router.push(`/genres/${genreId}`);
+    router.push(`/genres?genresID=${genreId}`);
   };
 
   useEffect(() => {
@@ -104,7 +104,7 @@ export function Header() {
                   key={genre.id}
                   variant={'outline'}
                   className="mr-4 mb-4 cursor-pointer"
-                  onClick={() => handleGenreSelect(genre.id.toString())} // Trigger genre selection
+                  onClick={() => handleGenreSelect(genre.id.toString())}
                 >
                   {genre.name}
                   <ChevronRight className="stroke-1" />
@@ -148,7 +148,7 @@ export function Header() {
                     key={genre.id}
                     variant={'secondary'}
                     className="mr-4 mb-4 cursor-pointer"
-                    onClick={() => handleGenreSelect(genre.id.toString())} // Trigger genre selection
+                    onClick={() => handleGenreSelect(genre.id.toString())}
                   >
                     {genre.name}
                     <ChevronRight className="stroke-1" />

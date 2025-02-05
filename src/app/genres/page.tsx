@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Movie } from '@/types/movie-type';
 import Image from 'next/image';
 import { Card, CardFooter, CardHeader } from '@/components/ui/card';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Pagination,
   PaginationContent,
@@ -15,24 +15,28 @@ import {
   PaginationNext,
 } from '@/components/ui/pagination';
 
-import { ChevronRight, X, Star } from 'lucide-react';
+import { ChevronRight, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 
 const Page = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [genreList, setGenreList] = useState<any[]>([]);
-  const [movieList, setMovieList] = useState<Movie[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [genres, setGenres] = useState<{ id: number; name: string }[]>([]);
+  const [selectedGenreID, setSelectedGenreID] = useState<string[]>([]);
+  const [totalMovies, setTotalMovies] = useState<number>(0); // To store the total number of movies
 
+  const searchParams = useSearchParams();
+  const searchedGenreID = searchParams.get('genresID');
   const TMDB_BASE_URL = process.env.TMDB_BASE_URL;
   const API_TOKEN = process.env.API_TOKEN;
 
   const router = useRouter();
 
-  const getGenreData = async () => {
+  const getGenresList = async () => {
     try {
       setLoading(true);
       const response = await axios.get(
@@ -43,7 +47,7 @@ const Page = () => {
           },
         }
       );
-      setGenreList(response.data.genres);
+      setGenres(response.data.genres);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data.status_message || 'API error');
@@ -55,20 +59,22 @@ const Page = () => {
     }
   };
 
-  const getMoviesByGenre = async (genreId: number) => {
+  const getMovies = async (genreIds: string[]) => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        `${TMDB_BASE_URL}/discover/movie?language=en&with_genres=${genreId}&page=${currentPage}`,
-        {
-          headers: {
-            Authorization: `Bearer ${API_TOKEN}`,
-          },
-        }
-      );
-      setMovieList(response.data.results);
+      const url = genreIds.length
+        ? `${TMDB_BASE_URL}/discover/movie?language=en&with_genres=${genreIds.join(
+            ','
+          )}&page=${currentPage}`
+        : `${TMDB_BASE_URL}/discover/movie?language=en&page=${currentPage}`;
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${API_TOKEN}`,
+        },
+      });
+      setMovies(response.data.results);
       setTotalPages(response.data.total_pages);
-      console.log(response.data);
+      setTotalMovies(response.data.total_results);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data.status_message || 'API error');
@@ -81,7 +87,14 @@ const Page = () => {
   };
 
   const handleGenreSelect = (genreId: string) => {
-    setSelectedGenre(Number(genreId));
+    const updatedGenres = selectedGenreID.includes(genreId)
+      ? selectedGenreID.filter((item) => item !== genreId)
+      : [...selectedGenreID, genreId];
+    setSelectedGenreID(updatedGenres);
+
+    const queryParams = new URLSearchParams();
+    queryParams.set('genresID', updatedGenres.join(','));
+    router.push(`/genres?${queryParams.toString()}`);
     setCurrentPage(1);
   };
 
@@ -106,14 +119,13 @@ const Page = () => {
   const pageNumbers = createPageArray(totalPages, currentPage);
 
   useEffect(() => {
-    getGenreData();
+    getGenresList();
   }, []);
 
   useEffect(() => {
-    if (selectedGenre !== null) {
-      getMoviesByGenre(selectedGenre);
-    }
-  }, [selectedGenre, currentPage]);
+    getMovies(selectedGenreID);
+  }, [selectedGenreID, currentPage]);
+
   const handleMovieClick = (movieId: number) => {
     router.push(`/detail/${movieId}`);
   };
@@ -121,7 +133,7 @@ const Page = () => {
   return (
     <div>
       <div className="m-5 flex justify-between max-w-[1280px] mx-auto pt-14 pr-5 pl-5 mt-16">
-        {!loading && !error && genreList.length > 0 && (
+        {!loading && !error && genres.length > 0 && (
           <div className="w-[387px]">
             <h1 className="text-3xl font-bold mb-10">Search Filter</h1>
 
@@ -129,51 +141,67 @@ const Page = () => {
             <h2 className="text-base font-bold mb-5 mt-2">
               See list of movies by genre
             </h2>
-            {genreList.map((genre) => (
-              <Badge
-                key={genre.id}
-                variant={'outline'}
-                className="mr-4 mb-4 cursor-pointer"
-                onClick={() => handleGenreSelect(genre.id.toString())}
-              >
-                {genre.name}
-                <ChevronRight className="stroke-1" />
-              </Badge>
-            ))}
+            {genres.length > 0 &&
+              genres.map((genre) => {
+                const isSelected = selectedGenreID.includes(
+                  genre.id.toString()
+                );
+                return (
+                  <Badge
+                    key={genre.id}
+                    variant="outline"
+                    className={`${
+                      isSelected
+                        ? 'bg-black text-white dark:bg-white dark:text-black m-2'
+                        : 'm-2'
+                    }`}
+                    onClick={() => handleGenreSelect(genre.id.toString())}
+                  >
+                    {genre.name}
+                    <ChevronRight className="stroke-1" />
+                  </Badge>
+                );
+              })}
           </div>
         )}
-
+        <Separator orientation="vertical" />
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 pt-9">
-          {movieList.map((movie) => (
-            <Card
-              key={movie.id}
-              className="w-full max-w-[150px] mx-auto cursor-pointer"
-              onClick={() => handleMovieClick(movie.id)}
-            >
-              <CardHeader className="p-0">
-                <Image
-                  src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w1280/${movie.poster_path}`}
-                  alt={movie.title}
-                  className="object-cover rounded"
-                  width={250}
-                  height={350}
-                  quality={100}
-                />
-              </CardHeader>
-              <CardFooter className="flex flex-col p-2 items-start ">
-                <div className="flex items-center gap-x-1">
-                  <Star className="text-yellow-400 w-4 fill-yellow-400" />
-                  <p className="text-sm leading-5 font-medium">
-                    {movie.vote_average}
-                  </p>
-                  <p className="text-muted-foreground text-xs pt-[2px]">/10</p>
-                </div>
-                <div className="h-14 overflow-hidden text-ellipsis line-clamp-2 text-lg text-foreground">
-                  {movie.title}
-                </div>
-              </CardFooter>
-            </Card>
-          ))}
+          {movies.length > 0 ? (
+            movies.map((movie) => (
+              <Card
+                key={movie.id}
+                className="w-full max-w-[150px] mx-auto cursor-pointer "
+                onClick={() => handleMovieClick(movie.id)}
+              >
+                <CardHeader className="p-0">
+                  <Image
+                    src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w1280/${movie.poster_path}`}
+                    alt={movie.title}
+                    className="object-cover rounded"
+                    width={250}
+                    height={350}
+                    quality={100}
+                  />
+                </CardHeader>
+                <CardFooter className="flex flex-col p-2 items-start">
+                  <div className="flex items-center gap-x-1">
+                    <Star className="text-yellow-400 w-4 fill-yellow-400" />
+                    <p className="text-sm leading-5 font-medium">
+                      {movie.vote_average}
+                    </p>
+                    <p className="text-muted-foreground text-xs pt-[2px]">
+                      /10
+                    </p>
+                  </div>
+                  <div className="h-14 overflow-hidden text-ellipsis line-clamp-2 text-lg text-foreground">
+                    {movie.title}
+                  </div>
+                </CardFooter>
+              </Card>
+            ))
+          ) : (
+            <p>No movies found for the selected genres.</p>
+          )}
         </div>
       </div>
       <Pagination className="mt-[32px] flex justify-end">
@@ -209,7 +237,6 @@ const Page = () => {
               );
             }
           })}
-
           <PaginationItem>
             <PaginationNext
               href="#"
