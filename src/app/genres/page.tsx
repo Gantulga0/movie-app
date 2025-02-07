@@ -152,8 +152,8 @@ const Page = () => {
                     variant="outline"
                     className={`${
                       isSelected
-                        ? 'bg-black text-white dark:bg-white dark:text-black m-2'
-                        : 'm-2'
+                        ? 'bg-black text-white dark:bg-white dark:text-black m-2 cursor-pointer'
+                        : 'm-2 cursor-pointer'
                     }`}
                     onClick={() => handleGenreSelect(genre.id.toString())}
                   >
