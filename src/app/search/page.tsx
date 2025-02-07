@@ -28,6 +28,7 @@ const Page = () => {
   const [genres, setGenres] = useState<{ id: number; name: string }[]>([]);
   const [selectedGenreID, setSelectedGenreID] = useState<string[]>([]);
   const [totalMovies, setTotalMovies] = useState<number>(0);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const searchParams = useSearchParams();
   const searchedGenreID = searchParams.get('genresID');
@@ -36,6 +37,7 @@ const Page = () => {
 
   const router = useRouter();
 
+  // Function to fetch genres
   const getGenresList = async () => {
     try {
       setLoading(true);
@@ -59,14 +61,19 @@ const Page = () => {
     }
   };
 
-  const getMovies = async (genreIds: string[]) => {
+  const getMovies = async (genreIds: string[], query: string = '') => {
     try {
       setLoading(true);
-      const url = genreIds.length
-        ? `${TMDB_BASE_URL}/discover/movie?language=en&with_genres=${genreIds.join(
-            ','
-          )}&page=${currentPage}`
-        : `${TMDB_BASE_URL}/discover/movie?language=en&page=${currentPage}`;
+      let url = `${TMDB_BASE_URL}/discover/movie?language=en&page=${currentPage}`;
+
+      if (genreIds.length) {
+        url += `&with_genres=${genreIds.join(',')}`;
+      }
+
+      if (query) {
+        url = `${TMDB_BASE_URL}/search/movie?query=${query}&page=${currentPage}&language=en`;
+      }
+
       const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${API_TOKEN}`,
@@ -86,14 +93,30 @@ const Page = () => {
     }
   };
 
+  const getSearchData = (query: string) => {
+    getMovies(selectedGenreID, query);
+  };
+
+  useEffect(() => {
+    const query = searchParams.get('query');
+    if (query) {
+      setSearchQuery(query);
+      getSearchData(query);
+    }
+  }, [searchParams]);
+
   const handleGenreSelect = (genreId: string) => {
     const updatedGenres = selectedGenreID.includes(genreId)
       ? selectedGenreID.filter((item) => item !== genreId)
       : [...selectedGenreID, genreId];
+
     setSelectedGenreID(updatedGenres);
 
     const queryParams = new URLSearchParams();
     queryParams.set('genresID', updatedGenres.join(','));
+    if (searchQuery) {
+      queryParams.set('query', searchQuery);
+    }
     router.push(`/genres?${queryParams.toString()}`);
     setCurrentPage(1);
   };
@@ -123,8 +146,8 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
-    getMovies(selectedGenreID);
-  }, [selectedGenreID, currentPage]);
+    getMovies(selectedGenreID, searchQuery);
+  }, [selectedGenreID, currentPage, searchQuery]);
 
   const handleMovieClick = (movieId: number) => {
     router.push(`/detail/${movieId}`);
@@ -132,10 +155,10 @@ const Page = () => {
 
   return (
     <div>
-      <div className="m-5 flex justify-between max-w-[1280px] mx-auto pt-14 pr-5 pl-5 mt-16 max-md:flex-col ">
+      <div className="m-5 flex justify-between max-w-[1280px] mx-auto pt-14 pr-5 pl-5 mt-16">
         {!loading && !error && genres.length > 0 && (
           <div className="w-[387px]">
-            <h1 className="text-3xl font-bold mb-10">Search Filter</h1>
+            <h1 className="text-3xl font-bold mb-10">Search results</h1>
 
             <h1 className="font-bold text-2xl">Genres</h1>
             <h2 className="text-base font-bold mb-5 mt-2">
@@ -164,11 +187,6 @@ const Page = () => {
               })}
           </div>
         )}
-
-        <div className="hidden max-md:block pt-5 pl-3 font-bold text-xl">
-          {totalMovies} titles
-        </div>
-
         <Separator orientation="vertical" />
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 pt-9">
           {movies.length > 0 ? (

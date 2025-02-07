@@ -41,7 +41,6 @@ export function Header() {
   const [moviesList, setMoviesList] = useState<any[]>([]);
 
   const router = useRouter();
-
   const getMovieData = async () => {
     try {
       setLoading(true);
@@ -107,6 +106,10 @@ export function Header() {
   };
 
   const firstFiveMovies = moviesList.slice(0, 5);
+
+  const handleSeeAllResult = () => {
+    router.push(`/search?query=${searchQuery}`);
+  };
 
   return (
     <header className="fixed top-0 inset-x-0 z-20 h-[59px] bg-background flex items-center justify-between mx-auto px-5 w-full">
@@ -205,6 +208,7 @@ export function Header() {
                     ? 'bg-black text-white  p-3 cursor-pointer border'
                     : 'bg-white text-black p-3 cursor-pointer border'
                 }
+                onClick={() => handleSeeAllResult()}
               >
                 See all result for : "{searchQuery}"
               </div>
