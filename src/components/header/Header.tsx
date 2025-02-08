@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import {
   Film,
   Search,
@@ -9,22 +9,22 @@ import {
   X,
   Star,
   ArrowRight,
-} from 'lucide-react';
-import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '../ui/input';
-import { Card, CardFooter, CardHeader } from '@/components/ui/card';
+} from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "../ui/input";
+import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Badge } from '../ui/badge';
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
-import Image from 'next/image';
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "../ui/badge";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import Image from "next/image";
 
 export function Header() {
   const TMDB_BASE_URL = process.env.TMDB_BASE_URL;
@@ -32,12 +32,12 @@ export function Header() {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [genreList, setGenreList] = useState<any[]>([]);
-  const [selectedGenre, setSelectedGenre] = useState<string>('');
+  const [selectedGenre, setSelectedGenre] = useState<string>("");
   const { theme, setTheme } = useTheme();
-  const isDarkMode = theme === 'dark';
+  const isDarkMode = theme === "dark";
   const [isSearchVisible, setIsSearchVisible] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [error, setError] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [error, setError] = useState<string>("");
   const [moviesList, setMoviesList] = useState<any[]>([]);
 
   const router = useRouter();
@@ -50,7 +50,7 @@ export function Header() {
       );
       setGenreList(genreResponse.data.genres);
     } catch (err) {
-      setError('An error occurred while fetching data.');
+      setError("An error occurred while fetching data.");
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,7 @@ export function Header() {
       console.log(searchResponse.data);
       setMoviesList(searchResponse.data.results);
     } catch (err) {
-      setError('An error occurred while fetching search data.');
+      setError("An error occurred while fetching search data.");
     } finally {
       setLoading(false);
     }
@@ -98,7 +98,7 @@ export function Header() {
   };
 
   const handleHomeClick = () => {
-    router.push('/');
+    router.push("/");
   };
 
   const handleMovieClick = (movieId: number) => {
@@ -139,7 +139,7 @@ export function Header() {
               {genreList.map((genre) => (
                 <Badge
                   key={genre.id}
-                  variant={'outline'}
+                  variant={"outline"}
                   className="mr-4 mb-4 cursor-pointer"
                   onClick={() => handleGenreSelect(genre.id.toString())}
                 >
@@ -159,11 +159,11 @@ export function Header() {
           {error && <p>Error: {error}</p>}
 
           {firstFiveMovies.length > 0 ? (
-            <div className="flex flex-col w-[577px]  absolute top-14 rounded-sm">
+            <div className="flex flex-col w-[577px]  absolute top-14 rounded-sm max-md:w-[450px]">
               {firstFiveMovies.map((movie) => (
                 <Card
                   key={movie.id}
-                  className="w-full max-w-[577px] mx-auto rounded-none cursor-pointer flex p-4 justify-between items-end"
+                  className="w-full max-w-[577px] mx-auto rounded-none cursor-pointer flex p-4 justify-between items-end max-md:max-w-[450px]"
                   onClick={() => handleMovieClick(movie.id)}
                 >
                   <div className="flex">
@@ -205,8 +205,8 @@ export function Header() {
               <div
                 className={
                   isDarkMode
-                    ? 'bg-black text-white  p-3 cursor-pointer border'
-                    : 'bg-white text-black p-3 cursor-pointer border'
+                    ? "bg-black text-white  p-3 cursor-pointer border"
+                    : "bg-white text-black p-3 cursor-pointer border"
                 }
                 onClick={() => handleSeeAllResult()}
               >
@@ -216,6 +216,51 @@ export function Header() {
           ) : (
             <p></p>
           )}
+        </div>
+        <div
+          className={`absolute top-0 left-0 flex justify-between items-center h-[59px] px-5 bg-background w-full transition-all duration-300 ease-in-out ${
+            isSearchVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-[-100px]"
+          } md:hidden`}
+        >
+          <div className="absolute top-3 left-20">
+            <Search className="absolute top-2 left-2 w-[18px] h-[18px]" />
+            <Input
+              placeholder="Search"
+              className="h-[36px] pl-9"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+          </div>
+          <div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className="flex justify-center items-center border rounded w-9 h-9">
+                  <ChevronDown className="text-white" />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-[330px] p-5 ml-5">
+                <h1 className="font-bold text-2xl">Genres</h1>
+                <h2 className="text-base">See list of movies by genre</h2>
+                <DropdownMenuSeparator className="mt-3 mb-3" />
+                {genreList.map((genre) => (
+                  <Badge
+                    key={genre.id}
+                    variant={"secondary"}
+                    className="mr-4 mb-4 cursor-pointer"
+                    onClick={() => handleGenreSelect(genre.id.toString())}
+                  >
+                    {genre.name}
+                    <ChevronRight className="stroke-1" />
+                  </Badge>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <Button variant="outline" onClick={toggleSearch}>
+            <X />
+          </Button>
         </div>
 
         <div className="flex gap-4 items-center">
@@ -229,7 +274,7 @@ export function Header() {
           <Button
             variant="outline"
             size="icon"
-            onClick={() => setTheme(isDarkMode ? 'light' : 'dark')}
+            onClick={() => setTheme(isDarkMode ? "light" : "dark")}
             aria-label="Toggle theme"
             className="w-9 h-9"
           >

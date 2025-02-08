@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Movie } from '@/types/movie-type';
-import Image from 'next/image';
-import { Card, CardFooter, CardHeader } from '@/components/ui/card';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Movie } from "@/types/movie-type";
+import Image from "next/image";
+import { Card, CardFooter, CardHeader } from "@/components/ui/card";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
@@ -13,31 +13,30 @@ import {
   PaginationLink,
   PaginationPrevious,
   PaginationNext,
-} from '@/components/ui/pagination';
+} from "@/components/ui/pagination";
 
-import { ChevronRight, Star } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { ChevronRight, Star } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 const Page = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [genres, setGenres] = useState<{ id: number; name: string }[]>([]);
   const [selectedGenreID, setSelectedGenreID] = useState<string[]>([]);
   const [totalMovies, setTotalMovies] = useState<number>(0);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const searchParams = useSearchParams();
-  const searchedGenreID = searchParams.get('genresID');
+  const searchedGenreID = searchParams.get("genresID");
   const TMDB_BASE_URL = process.env.TMDB_BASE_URL;
   const API_TOKEN = process.env.API_TOKEN;
 
   const router = useRouter();
 
-  // Function to fetch genres
   const getGenresList = async () => {
     try {
       setLoading(true);
@@ -52,22 +51,22 @@ const Page = () => {
       setGenres(response.data.genres);
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data.status_message || 'API error');
+        setError(err.response?.data.status_message || "API error");
       } else {
-        setError('An unexpected error occurred.');
+        setError("An unexpected error occurred.");
       }
     } finally {
       setLoading(false);
     }
   };
 
-  const getMovies = async (genreIds: string[], query: string = '') => {
+  const getMovies = async (genreIds: string[], query: string = "") => {
     try {
       setLoading(true);
       let url = `${TMDB_BASE_URL}/discover/movie?language=en&page=${currentPage}`;
 
       if (genreIds.length) {
-        url += `&with_genres=${genreIds.join(',')}`;
+        url += `&with_genres=${genreIds.join(",")}`;
       }
 
       if (query) {
@@ -84,9 +83,9 @@ const Page = () => {
       setTotalMovies(response.data.total_results);
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data.status_message || 'API error');
+        setError(err.response?.data.status_message || "API error");
       } else {
-        setError('An unexpected error occurred.');
+        setError("An unexpected error occurred.");
       }
     } finally {
       setLoading(false);
@@ -98,7 +97,7 @@ const Page = () => {
   };
 
   useEffect(() => {
-    const query = searchParams.get('query');
+    const query = searchParams.get("query");
     if (query) {
       setSearchQuery(query);
       getSearchData(query);
@@ -113,9 +112,9 @@ const Page = () => {
     setSelectedGenreID(updatedGenres);
 
     const queryParams = new URLSearchParams();
-    queryParams.set('genresID', updatedGenres.join(','));
+    queryParams.set("genresID", updatedGenres.join(","));
     if (searchQuery) {
-      queryParams.set('query', searchQuery);
+      queryParams.set("query", searchQuery);
     }
     router.push(`/genres?${queryParams.toString()}`);
     setCurrentPage(1);
@@ -133,7 +132,7 @@ const Page = () => {
     }
 
     if (currentPage < totalPages - 2) {
-      pages.push('...');
+      pages.push("...");
     }
 
     return pages;
@@ -175,8 +174,8 @@ const Page = () => {
                     variant="outline"
                     className={`${
                       isSelected
-                        ? 'bg-black text-white dark:bg-white dark:text-black m-2 cursor-pointer'
-                        : 'm-2 cursor-pointer'
+                        ? "bg-black text-white dark:bg-white dark:text-black m-2 cursor-pointer"
+                        : "m-2 cursor-pointer"
                     }`}
                     onClick={() => handleGenreSelect(genre.id.toString())}
                   >
@@ -240,7 +239,7 @@ const Page = () => {
 
           {pageNumbers.map((page, index) => {
             const key = `${page}-${index}`;
-            if (page === '...') {
+            if (page === "...") {
               return (
                 <PaginationItem key={key}>
                   <PaginationLink href="#">...</PaginationLink>
