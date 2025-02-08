@@ -159,7 +159,7 @@ export function Header() {
           {error && <p>Error: {error}</p>}
 
           {firstFiveMovies.length > 0 ? (
-            <div className="flex flex-col w-[577px]  absolute top-14 rounded-sm max-md:w-[450px]">
+            <div className="flex flex-col w-[577px]  absolute top-14 rounded-sm max-md:w-[450px] max-h-[650px] overflow-y-scroll">
               {firstFiveMovies.map((movie) => (
                 <Card
                   key={movie.id}
