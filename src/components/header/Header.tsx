@@ -233,6 +233,7 @@ export function Header() {
               onChange={handleSearchChange}
             />
           </div>
+
           <div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -258,6 +259,64 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+          {firstFiveMovies.length > 0 ? (
+            <div className="flex flex-col w-[335px]  absolute top-14 rounded-sm overflow-y-scroll">
+              {firstFiveMovies.map((movie) => (
+                <Card
+                  key={movie.id}
+                  className="w-full max-w-[577px] mx-auto rounded-none cursor-pointer flex p-4 justify-between items-end max-md:max-w-[450px]"
+                  onClick={() => handleMovieClick(movie.id)}
+                >
+                  <div className="flex">
+                    <CardHeader className="p-0">
+                      <Image
+                        src={`${process.env.TMDB_IMAGE_SERVICE_URL}/w1280/${movie.poster_path}`}
+                        alt={movie.title}
+                        className="object-cover"
+                        width={67}
+                        height={100}
+                        quality={100}
+                      />
+                    </CardHeader>
+                    <CardFooter className="flex flex-col p-2 items-start ">
+                      <div className="text-xl font-bold">{movie.title}</div>
+                      <div className="flex items-center gap-x-1">
+                        <Star className="text-yellow-400 w-4 fill-yellow-400" />
+                        <p className="text-sm leading-5 font-medium">
+                          {movie.vote_average}
+                        </p>
+                        <p className="text-muted-foreground text-xs pt-[2px]">
+                          /10
+                        </p>
+                      </div>
+                      <p>{movie.release_date}</p>
+                    </CardFooter>
+                  </div>
+
+                  <Button
+                    variant="link"
+                    className="font-inter text-sm font-semibold flex"
+                    onClick={() => handleMovieClick(movie.id)}
+                  >
+                    See more
+                    <ArrowRight />
+                  </Button>
+                </Card>
+              ))}
+              <div
+                className={
+                  isDarkMode
+                    ? "bg-black text-white  p-3 cursor-pointer border"
+                    : "bg-white text-black p-3 cursor-pointer border"
+                }
+                onClick={() => handleSeeAllResult()}
+              >
+                See all result for : "{searchQuery}"
+              </div>
+            </div>
+          ) : (
+            <p></p>
+          )}
           <Button variant="outline" onClick={toggleSearch}>
             <X />
           </Button>
